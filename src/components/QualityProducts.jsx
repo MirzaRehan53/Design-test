@@ -79,7 +79,6 @@ const QualityProducts = () => {
     ...originalCards,
   ];
 
-  // Animate title when it comes into view
   useEffect(() => {
     if (isTitleVisible && !hasTitleAnimated) {
       setHasTitleAnimated(true);
@@ -90,25 +89,21 @@ const QualityProducts = () => {
     (newIndex) => {
       if (isAnimating || isResetting.current) return;
 
-      // Start exit animation
       setAnimateTextIn(false);
       setAnimateTextOut(true);
       setIsAnimating(true);
 
-      // Store previous card for exit animation
       prevCardRef.current = cards[currentIndex];
 
-      // After exit animation completes, change card and start enter animation
       setTimeout(() => {
         setCurrentIndex(newIndex);
         setAnimateTextOut(false);
 
-        // Small delay before enter animation starts
         setTimeout(() => {
           setAnimateTextIn(true);
           setIsAnimating(false);
         }, 100);
-      }, 400); // Duration of exit animation
+      }, 400);
     },
     [isAnimating, currentIndex, cards]
   );
@@ -142,7 +137,6 @@ const QualityProducts = () => {
     return () => clearInterval(interval);
   }, [nextSlide]);
 
-  // Initial text animation - trigger with short delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimateTextIn(true);

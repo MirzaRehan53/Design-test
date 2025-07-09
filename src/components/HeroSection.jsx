@@ -1,38 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-// AnimatedText component
-const AnimatedText = ({
-  text,
-  animateIn,
-  animateOut,
-  delay = 0,
-  staggerDelay = 0.1,
-}) => {
-  const words = text.split(" ");
-
-  return (
-    <span className="inline-block">
-      {words.map((word, index) => (
-        <span
-          key={index}
-          className={`inline-block mr-2 ${
-            animateOut
-              ? "animate-fade-out-up"
-              : animateIn
-              ? "animate-fade-in-up"
-              : "opacity-0"
-          }`}
-          style={{
-            animationDelay: `${delay + index * staggerDelay}s`,
-            animationFillMode: "both",
-          }}
-        >
-          {word}
-        </span>
-      ))}
-    </span>
-  );
-};
+import AnimatedText from "./AnimatedText";
 
 const HeroSection = () => {
   const [slideIndex, setSlideIndex] = useState(0);
@@ -75,11 +42,9 @@ const HeroSection = () => {
     { welcome: "Explore Possibilities", title: "Sustainable Future" },
   ];
 
-  // Helper functions to get current and next indices
   const getCurrentIndex = () => slideIndex;
   const getNextIndex = () => (slideIndex + 1) % images.length;
 
-  // Initial text animation - trigger immediately on mount
   useEffect(() => {
     const timer = setTimeout(() => {
       setTextAnimateIn(true);
@@ -88,21 +53,19 @@ const HeroSection = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Preload next image
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.src = images[getNextIndex()];
   }, [slideIndex]);
 
-  // Simple progress timer that runs independently
   useEffect(() => {
     if (isTransitioning) return;
 
     progressIntervalRef.current = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          return 100; // Cap at 100, don't reset here
+          return 100;
         }
         return prev + 0.7;
       });
@@ -113,9 +76,8 @@ const HeroSection = () => {
         clearInterval(progressIntervalRef.current);
       }
     };
-  }, [isTransitioning, slideIndex]); // Restart when slide changes or transition ends
+  }, [isTransitioning, slideIndex]);
 
-  // Watch for progress completion and trigger transition
   useEffect(() => {
     if (progress >= 100 && !isTransitioning) {
       goToNextSlide();
@@ -125,33 +87,26 @@ const HeroSection = () => {
   const goToNextSlide = () => {
     if (isTransitioning) return;
 
-    // Clear progress timer
     if (progressIntervalRef.current) {
       clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
     }
 
-    // Start text exit animation
     setTextAnimateOut(true);
     setTextAnimateIn(false);
     setIsTransitioning(true);
 
-    // Start transition
     transitionTimeoutRef.current = setTimeout(() => {
-      // Move to next slide
       setSlideIndex((prev) => (prev + 1) % images.length);
       setAnimationKey((prev) => prev + 1);
       setImageLoaded(true);
 
-      // Reset text animation states
       setTextAnimateOut(false);
 
-      // Start text enter animation with a slight delay
       setTimeout(() => {
         setTextAnimateIn(true);
       }, 200);
 
-      // Reset progress and end transition
       setProgress(0);
       setIsTransitioning(false);
     }, 2300);
@@ -163,7 +118,6 @@ const HeroSection = () => {
     }
   };
 
-  // Cleanup
   useEffect(() => {
     return () => {
       if (progressIntervalRef.current)
