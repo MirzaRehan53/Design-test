@@ -1,26 +1,17 @@
-# General ignores for common temporary files and build outputs
-
-# Operating System Files
-.DS_Store
-Thumbs.db
-
-# IDE and Editor Files
-.vscode/
-.idea/
-*.swp
-*~
-*.bak
-
-# Build Output and Dependencies
+# Node.js dependencies
 /node_modules/
+
+# Common build output directories
 /build/
 /dist/
-/target/
-*.log
-*.tmp
-*.exe
-*.dll
 
-# Environment Variables
+# Environment variables (sensitive information)
 .env
 .env.local
+
+# macOS specific files
+.DS_Store
+
+# IDE and editor specific files
+.vscode/
+.idea/
